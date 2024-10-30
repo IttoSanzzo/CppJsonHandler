@@ -1,5 +1,5 @@
 # 0. Main Info
-NAME	= jsonReader
+NAME	= jsonReader.a
 C_COMP	= c++
 C_ARRC	= ar -rc
 C_FLAG	= -Wall -Werror -Wextra -std=c++98
@@ -24,16 +24,15 @@ D_SRCS	= src/
 D_OBJS	= obj/
 
 # 2. Sources & Objects
-DS_MAIN	= main/
-DS_CLAS	= classes/
-DS_UTIL	= utils/
-N_MAIN	=	main.cpp
+DS_CLAS	=	classes/
+N_CLAS	=	JsonObject.cpp	\
+			JsonData.cpp	\
+			JsonNode.cpp	\
+			JsonReader.cpp	\
 
 # 3. Source Manipulation
-F_SRCS	=	$(addprefix $(D_SRCS)$(DS_MAIN), $(N_MAIN))	\
-N_OBJS	=	$(N_MAIN:.cpp=.opp)	\
-			$(N_CLAS:.cpp=.opp)	\
-			$(N_UTIL:.cpp=.opp)
+F_SRCS	=	$(addprefix $(D_SRCS)$(DS_CLAS), $(N_CLAS))
+N_OBJS	=	$(N_CLAS:.cpp=.opp)
 F_OBJS	=	$(addprefix $(D_OBJS), $(N_OBJS))
 
 # 4. Mandatory Rules
@@ -44,10 +43,11 @@ all		: $(NAME)
 $(NAME)		: $(D_OBJS) $(F_OBJS)
 	@$(C_PUTS) "\n\t$(P_NCYAN)Finishing $(NAME)..: $(P_LBLUE)$(NAME)$(P_WHITE)\n"
 	@$(C_ARRC) -o $@ $(F_OBJS)
+	@ranlib $@
 	@$(C_PUTS) "$(P_GREEN)Done!$(P_WHITE)\n"
 
 #	2. Object Generation
-$(D_OBJS)%.opp	: $(D_SRCS)/*/%.cpp
+$(D_OBJS)%.opp	: $(D_SRCS)*/%.cpp
 	@$(C_PUTS) "\t$(P_PRPLE)Generating $(NAME)..: %-33.33s\r $(P_WHITE)" $@
 	@$(C_COMP) $(C_FLAG) $(D_HDRS) -c $< -o $@
 
@@ -79,3 +79,10 @@ val		:
 
 #	8. Phony
 .PHONY: all clean fclean re val
+
+
+
+test: re
+	@clear
+	@c++ main.cpp ./jsonReader.a -o test.out
+	@./test.out

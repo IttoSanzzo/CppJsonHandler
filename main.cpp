@@ -1,6 +1,10 @@
 #include "./includes/JsonHandler.hpp"
 
 int	main(void) {
-	test();
+	std::cout << "1\n";
+	
+	
+
+	std::cout << "\n2\n";
 	return (0);
 }

@@ -3,11 +3,35 @@
 
 // 0. External Includes
 # include "iostream"
+# include "typeinfo"
+# include "vector"
+# include "list"
 
-// 1. Internal Classes
+// 1. Data Structures
+
+class JsonNode;
+class JsonData;
+enum DataType {
+	None,
+	Bool,
+	Int,
+	Double,
+	String,
+	Child,
+	Children
+};
+union DataValue {
+	bool			BoolValue;
+	int				IntValue;
+	double			DoubleValue;
+	std::string*	StringValue;
+	JsonNode*		ChildValue;
+};
+
+// 3. Internal Classes
+# include "JsonNode.hpp"
+# include "JsonData.hpp"
 # include "JsonReader.hpp"
-
-// 2. Functions
-void	test(void);
+# include "JsonObject.hpp"
 
 #endif
