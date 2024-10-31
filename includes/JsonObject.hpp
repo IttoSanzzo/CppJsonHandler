@@ -8,8 +8,7 @@
 class JsonObject {
 	private:
 	// M. Member Variables
-		std::string	OriginalString;
-		std::string	RawString;
+
 	public:
 	// C. Constructors
 		~JsonObject(void);
@@ -21,8 +20,6 @@ class JsonObject {
 	public:
 	// S. Setters
 	// G. Getters
-		std::string	GetOriginalString(void);
-		std::string	GetRawString(void);
 		std::string	TryGetValue(std::string objectName);
 
 	public:

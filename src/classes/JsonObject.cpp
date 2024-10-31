@@ -6,33 +6,19 @@ JsonObject::~JsonObject(void) {
 }
 // CC. Common Constructors
 JsonObject::JsonObject(void) {
-	this->OriginalString = "";
-	this->RawString = "";
 	std::cout << "JsonObject Default Constructor Called!" << std::endl;
 }
 JsonObject::JsonObject(const JsonObject& src) {
-	this->OriginalString = src.OriginalString;
-	this->RawString = src.RawString;
+	(void)src;
 }
 JsonObject& JsonObject::operator=(const JsonObject& src) {
-	this->OriginalString = src.OriginalString;
-	this->RawString = src.RawString;
+	(void)src;
 	return (*this);
 }
 
 // OC. Other Contructors
-JsonObject::JsonObject(std::string jsonString) {
-	this->OriginalString = jsonString;
-	std::cout << "JsonObject String Constructor Called!" << std::endl;
-}
 
 // G. Getters
-std::string	JsonObject::GetOriginalString(void) {
-	return (this->OriginalString);
-}
-std::string	JsonObject::GetRawString(void) {
-	return (this->RawString);
-}
 std::string	JsonObject::TryGetValue(std::string objectName) {
 	(void)objectName;
 	return ("");

@@ -27,6 +27,7 @@ D_OBJS	= obj/
 DS_CLAS	=	classes/
 N_CLAS	=	JsonObject.cpp	\
 			JsonData.cpp	\
+			DataNode.cpp	\
 			JsonNode.cpp	\
 			JsonReader.cpp	\
 
@@ -86,3 +87,8 @@ test: re
 	@clear
 	@c++ main.cpp ./jsonReader.a -o test.out
 	@./test.out
+
+valtest: re
+	@clear
+	@c++ main.cpp ./jsonReader.a -o test.out
+	@valgrind --leak-check=full --show-leak-kinds=all ./test.out
