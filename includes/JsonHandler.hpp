@@ -34,6 +34,5 @@ union DataValue {
 # include "JsonData.hpp"
 # include "DataNode.hpp"
 # include "JsonReader.hpp"
-# include "JsonObject.hpp"
 
 #endif

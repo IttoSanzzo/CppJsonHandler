@@ -25,10 +25,9 @@ D_OBJS	= obj/
 
 # 2. Sources & Objects
 DS_CLAS	=	classes/
-N_CLAS	=	JsonObject.cpp	\
-			JsonData.cpp	\
+N_CLAS	=	JsonNode.cpp	\
 			DataNode.cpp	\
-			JsonNode.cpp	\
+			JsonData.cpp	\
 			JsonReader.cpp	\
 
 # 3. Source Manipulation
