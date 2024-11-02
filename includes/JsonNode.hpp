@@ -29,6 +29,7 @@ class JsonNode {
 		size_t		GetSize(void) const;
 		JsonData*	FindData(const std::string& name);
 	// 0. Member Functions
+		std::string	ToString(const bool& withLineBreaks = true);
 		void		DeleteData(std::string name);
 		JsonData*	TryPushData(const JsonData& data);
 		JsonData*	TryPushData(const std::string& name, bool value);

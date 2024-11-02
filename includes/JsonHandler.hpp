@@ -6,11 +6,12 @@
 # include "typeinfo"
 # include "exception"
 
-// 1. Data Structures
-
+// 1. Class Declarations
 class JsonNode;
 class DataNode;
 class JsonData;
+
+// 2. Data Structures
 enum DataType {
 	None,
 	Bool,

@@ -78,6 +78,9 @@ DataNode*	DataNode::GetLast(void) {
 }
 
 // 0. Member Functions
+std::string	DataNode::ToString(const bool& withLineBreaks) {
+
+}
 DataNode*	DataNode::FindNode(const std::string& name) {
 	DataNode*	finder = this;
 	do {

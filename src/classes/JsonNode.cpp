@@ -61,6 +61,7 @@ JsonData*	JsonNode::FindData(const std::string& name) {
 }
 
 // 0. Member Functions
+// 0.1 Others
 void		JsonNode::DeleteData(std::string name) {
 	JsonNode*	jsonNode = this;
 	if (name.find('.') != std::string::npos) {
@@ -86,6 +87,27 @@ void		JsonNode::DeleteData(std::string name) {
 		}
 	}
 }
+std::string	JsonNode::ToString(const bool& withLineBreaks) {
+	(void)withLineBreaks;
+	std::string jsonString = "{";
+	DataNode*	dataNode = this->DataNodes;
+	while (dataNode != NULL) {
+		jsonString += dataNode->ToString(withLineBreaks);
+		if (dataNode->Next != NULL)
+			switch (withLineBreaks) {
+				case (true):
+					jsonString =+ ",\n";
+				break;
+				case (false):
+					jsonString =+ ",";
+				break;
+			}
+		dataNode = dataNode->Next;
+	}
+	return (jsonString + "}");
+}
+
+// 0.1 TryPushes
 JsonData*	JsonNode::TryPushData(const JsonData& src) {
 	JsonData* data = this->FindData(src.Name);
 	if (data != NULL) {
@@ -138,6 +160,7 @@ JsonData*	JsonNode::TryPushData(const std::string& name, const JsonNode& value) 
 	dataValue.ChildValue = new JsonNode(value);
 	return (this->PushDataDoor(name, dataValue, Child));
 }
+// 0.1 TryGets
 bool		JsonNode::TryGetBool(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
