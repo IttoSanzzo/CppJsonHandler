@@ -13,7 +13,7 @@ DataNode::DataNode(void) {
 	this->Previous = NULL;
 	this->Next = NULL;
 	this->Data = NULL;
-	std::cout << "DataNode " << " Default Constructor Called!" << std::endl;
+	// std::cout << "DataNode " << " Default Constructor Called!" << std::endl;
 }
 DataNode::DataNode(const DataNode& src) {
 	this->DeepCopy(src);

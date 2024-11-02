@@ -2,7 +2,7 @@
 
 // 01. Static Funcion Prototypes
 static std::string*	split(const std::string& inputString, char delimiter);
-static size_t		StringArrayLength(std::string* str);
+static size_t		StringArrayLength(const std::string* str);
 
 // D. Destructor
 JsonNode::~JsonNode(void) {
@@ -16,7 +16,7 @@ JsonNode::JsonNode(void) {
 	this->Parent = NULL;
 	this->Size = 0;
 	this->DataNodes = NULL;
-	std::cout << "JsonNode " << this->Name << " Default Constructor Called!" << std::endl;
+	// std::cout << "JsonNode " << this->Name << " Default Constructor Called!" << std::endl;
 }
 JsonNode::JsonNode(const JsonNode& src) {
 	this->DeepCopy(src);
@@ -32,7 +32,7 @@ JsonNode::JsonNode(std::string name) {
 	this->Parent = NULL;
 	this->Size = 0;
 	this->DataNodes = NULL;
-	std::cout << "JsonNode " << this->Name << " Default Constructor Called!" << std::endl;
+	// std::cout << "JsonNode " << this->Name << " Default Constructor Called!" << std::endl;
 }
 
 // S. Setters
@@ -53,165 +53,119 @@ JsonNode*	JsonNode::GetParent(void) const {
 size_t		JsonNode::GetSize(void) const {
 	return (this->Size);
 }
-JsonData*	JsonNode::FindData(std::string name) {
+JsonData*	JsonNode::FindData(const std::string& name) {
 	std::string* targetName = split(name, '.');
-	if (StringArrayLength(targetName) == 0) {
-		delete[]	targetName;
-		return (NULL);
-	}
-	DataNode* node = this->DataNodes->FindNode(targetName[0]);
-	if (node == NULL) {
-		delete[]	targetName;
-		return (NULL);
-	}
-	if (StringArrayLength(targetName) == 1) {
-		delete[]	targetName;
-		return (node->Data);
-	}
-	if (node->Data->Type != Child) {
-		delete[]	targetName;
-		return (NULL);
-	}
-	JsonNode* child = node->Data->Value.ChildValue;
-	JsonData* targetData = child->FindData(targetName + 1);
+	JsonData* targetData = this->FindData(targetName);
 	delete[] targetName;
 	return (targetData);
 }
 
 // 0. Member Functions
-DataNode*	JsonNode::TryPushData(const JsonData& src) {
-	DataNode* node = this->DataNodes->FindNode(src.Name);
-	if (node != NULL) {
-		if (node->Data == NULL) {
-			node->Data = new JsonData(src);
-			return (node);
+void		JsonNode::DeleteData(std::string name) {
+	JsonNode*	jsonNode = this;
+	if (name.find('.') != std::string::npos) {
+		std::string* targetName = split(name, '.');
+		size_t targetSize = StringArrayLength(targetName) - 1;
+		JsonData* data;
+		for (size_t targetIndex = 0; targetIndex < targetSize; targetIndex++) {
+			data = jsonNode->FindData(targetName[targetIndex]);
+			if (data == NULL || data->Type != Child) {
+				delete[] targetName;
+				return ;
+			}
+			jsonNode = data->Value.ChildValue;
 		}
+		name = targetName[targetSize];
+		delete[] targetName;
+	}
+	if (jsonNode != NULL && jsonNode->DataNodes != NULL) {
+		DataNode*	dataNode = jsonNode->DataNodes->FindNode(name);
+		if (dataNode != NULL) {
+			jsonNode->DestroyDataNode(dataNode);
+			jsonNode->Size--;
+		}
+	}
+}
+JsonData*	JsonNode::TryPushData(const JsonData& src) {
+	JsonData* data = this->FindData(src.Name);
+	if (data != NULL) {
 		switch (src.Type) {
 			case (Bool):
-				node->Data->SetValue(src.Value.BoolValue);
+				data->SetValue(src.Value.BoolValue);
 			break;
 			case (Int):
-				node->Data->SetValue(src.Value.IntValue);
+				data->SetValue(src.Value.IntValue);
 			break;
 			case (Double):
-				node->Data->SetValue(src.Value.DoubleValue);
+				data->SetValue(src.Value.DoubleValue);
 			break;
 			case (String):
-				node->Data->SetValue(src.Value.StringValue);
+				data->SetValue(src.Value.StringValue);
 			break;
 			case (Child):
-				node->Data->SetValue(src.Value.ChildValue);
+				data->SetValue(src.Value.ChildValue);
 			break;
 			default:
 				return (NULL);
 			break;
 		}
-		return (node);
-	}
-	return (this->CreateSimpleDataNode(new JsonData(src)));
-}
-DataNode*	JsonNode::TryPushData(std::string name, bool value) {
-	JsonData* data = this->FindData(name);
-	if (data != NULL) {
-		data->SetValue(value);
 		return (data);
 	}
-	std::string* targetName = split(name, '.');
-	size_t targetSize = StringArrayLength(targetName);
-	DataNode* newNode = this->TryCreateDataNode(new JsonData(targetName[targetSize - 1], value), targetName, targetSize);
-	delete[] targetName;
-	return (newNode);
+	return (this->CreateSimpleDataNode(new JsonData(src))->Data);
 }
-
-/*
-
-		VOCE ESTAJA PENSANDO EM TROCAR O RESTORNO DO TRYPUSHDATA DE DATANODE* PARA JSONDATA*, TALVEZ PELOS RETORNOS DAS PROPRIAS FUNCOES.
-
-*/
-
-DataNode*	JsonNode::TryPushData(std::string name, int value) {
-	JsonData* data = this->FindData(name);
-	if (data != NULL) {
-		data->SetValue(value);
-		return ;
-	}
-	std::string* targetName = split(name, '.');
-	size_t targetSize = StringArrayLength(targetName);
-	DataNode* newNode = this->TryCreateDataNode(new JsonData(targetName[targetSize - 1], value), targetName, targetSize);
-	delete[] targetName;
-	return (newNode);
+JsonData*	JsonNode::TryPushData(const std::string& name, bool value) {
+	DataValue	dataValue;
+	dataValue.BoolValue = value;
+	return (this->PushDataDoor(name, dataValue, Bool));
 }
-DataNode*	JsonNode::TryPushData(std::string name, double value) {
-	JsonData* data = this->FindData(name);
-	if (data != NULL) {
-		data->SetValue(value);
-		return ;
-	}
-	std::string* targetName = split(name, '.');
-	size_t targetSize = StringArrayLength(targetName);
-	DataNode* newNode = this->TryCreateDataNode(new JsonData(targetName[targetSize - 1], value), targetName, targetSize);
-	delete[] targetName;
-	return (newNode);
+JsonData*	JsonNode::TryPushData(const std::string& name, int value) {
+	DataValue	dataValue;
+	dataValue.IntValue = value;
+	return (this->PushDataDoor(name, dataValue, Int));
 }
-DataNode*	JsonNode::TryPushData(std::string name, const std::string& value) {
-	JsonData* data = this->FindData(name);
-	if (data != NULL) {
-		data->SetValue(value);
-		return ;
-	}
-	std::string* targetName = split(name, '.');
-	size_t targetSize = StringArrayLength(targetName);
-	DataNode* newNode = this->TryCreateDataNode(new JsonData(targetName[targetSize - 1], value), targetName, targetSize);
-	delete[] targetName;
-	return (newNode);
+JsonData*	JsonNode::TryPushData(const std::string& name, double value) {
+	DataValue	dataValue;
+	dataValue.DoubleValue = value;
+	return (this->PushDataDoor(name, dataValue, Double));
 }
-DataNode*	JsonNode::TryPushData(std::string name, const JsonNode& value) {
-	JsonData* data = this->FindData(name);
-	if (data != NULL) {
-		data->SetValue(value);
-		return ;
-	}
-	std::string* targetName = split(name, '.');
-	size_t targetSize = StringArrayLength(targetName);
-	DataNode* newNode = this->TryCreateDataNode(new JsonData(targetName[targetSize - 1], value), targetName, targetSize);
-	delete[] targetName;
-	return (newNode);
+JsonData*	JsonNode::TryPushData(const std::string& name, const std::string& value) {
+	DataValue	dataValue;
+	dataValue.StringValue = new std::string(value);
+	return (this->PushDataDoor(name, dataValue, String));
 }
-void	JsonNode::DeleteData(std::string name) {
-	DataNode*	node = this->DataNodes->FindNode(name);
-	if (node != NULL) {
-		this->Size--;
-		this->DestroyDataNode(node);
-	}
+JsonData*	JsonNode::TryPushData(const std::string& name, const JsonNode& value) {
+	DataValue	dataValue;
+	dataValue.ChildValue = new JsonNode(value);
+	return (this->PushDataDoor(name, dataValue, Child));
 }
 bool		JsonNode::TryGetBool(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
-		throw JsonException("Not Found");
+		throw JsonException("TryGetBool..: '" + name + "' Not Found.");
 	return (data->TryGetBool());
 }
 int			JsonNode::TryGetInt(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
-		throw JsonException("Not Found");
+		throw JsonException("TryGetInt..: '" + name + "' Not Found.");
 	return (data->TryGetInt());
 }
 double		JsonNode::TryGetDouble(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
-		throw JsonException("Not Found");
+		throw JsonException("TryGetDouble..: '" + name + "' Not Found.");
 	return (data->TryGetDouble());
 }
 std::string	JsonNode::TryGetString(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
-		throw JsonException("Not Found");
+		throw JsonException("TryGetString..: '" + name + "' Not Found.");
 	return (data->TryGetString());
 }
 JsonNode	JsonNode::TryGetChild(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
-		throw JsonException("Not Found");
+		throw JsonException("TryGetChild..: '" + name + "' Not Found.");
 	return (data->TryGetChild());
 }
 
@@ -230,48 +184,57 @@ void		JsonNode::DestroyDataNode(DataNode* node) {
 	node->Next = NULL;
 	delete node;
 }
-DataNode*	JsonNode::TryCreateDataNode(JsonData* data, std::string* targetName, size_t targetSize) {
-	size_t	targetIndex = 0;
-	JsonNode* node = this;
-	JsonNode* nextNode = NULL;
-	while (targetIndex < targetSize) {
-		JsonData* data = node->FindData(targetName[targetIndex]);
-		if (data == NULL)
-			node = (node->CreateSimpleDataNode(new JsonData(targetName[targetIndex], JsonNode(targetName[targetIndex]))))->Data->Value.ChildValue;
-		else {
-			if (data->Type != Child)
-				throw JsonException("Trying to push through a non-child node");
-			node = data->Value.ChildValue;
-		}
+JsonData*	JsonNode::PushDataDoor(const std::string& name, const DataValue& value, const DataType& type) {
+	JsonData* data = this->FindData(name);
+	if (data != NULL) {
+		data->SetValue(value, type);
+		return (data);
 	}
-	node->Size++;
-	return (this->CreateSimpleDataNode(data));
+	std::string* targetName = split(name, '.');
+	size_t targetSize = StringArrayLength(targetName) - 1;
+	DataNode* newNode = this->TryCreateDataNode(new JsonData(targetName[targetSize], value, type), targetName, targetSize);
+	delete[] targetName;
+	return (newNode->Data);
+}
+DataNode*	JsonNode::TryCreateDataNode(JsonData* data, const std::string* targetName, size_t targetSize) {
+	JsonNode* jsonNode = this;
+	JsonData* jsonData;
+	for (size_t targetIndex = 0; targetIndex < targetSize; targetIndex++) {
+		jsonData = jsonNode->FindData(targetName[targetIndex]);
+		if (jsonData != NULL) {
+			if (jsonData->Type != Child) {
+				delete[] targetName;
+				throw JsonException("Trying to push through a non-child node");
+			}
+			jsonNode = jsonData->Value.ChildValue;
+		}
+		else
+			jsonNode = (jsonNode->CreateSimpleDataNode(new JsonData( targetName[targetIndex], new JsonNode(targetName[targetIndex]))))->Data->Value.ChildValue;
+	}
+	jsonNode->Size++;
+	return (jsonNode->CreateSimpleDataNode(data));
 }
 DataNode*	JsonNode::CreateSimpleDataNode(JsonData* data) {
-	if (this->DataNodes == NULL) {
-		this->DataNodes = new DataNode(data);
-		return (this->DataNodes);
-	}
-	else
-		return (this->DataNodes->AddBack(data));
+	if (this->DataNodes == NULL)
+		return (this->DataNodes = new DataNode(data));
+	return (this->DataNodes->AddBack(data));
 }
-JsonData*	JsonNode::FindData(std::string* targetName) {
-	DataNode* node = this->DataNodes->FindNode(targetName[0]);
-	if (StringArrayLength(targetName) == 0)
+JsonData*	JsonNode::FindData(const std::string* targetName) {
+	if (targetName[0].empty() || this->DataNodes == NULL)
 		return (NULL);
+	DataNode* node = this->DataNodes->FindNode(targetName[0]);
 	if (node == NULL)
 		return (NULL);
-	if (StringArrayLength(targetName) == 1)
+	else if (targetName[1].empty())
 		return (node->Data);
-	if (node->Data->Type != Child)
+	else if (node->Data == NULL || node->Data->Type != Child)
 		return (NULL);
-	JsonNode* child = node->Data->Value.ChildValue;
-	JsonData* targetData = child->FindData(targetName + 1);
+	JsonData* targetData = node->Data->Value.ChildValue->FindData(targetName + 1);
 	return (targetData);
 }
 
 // 3. Static Util Functions
-static size_t		StringArrayLength(std::string* str) {
+static size_t		StringArrayLength(const std::string* str) {
 	size_t	lenght = 0;
 	while (str[lenght] != "")
 		lenght++;

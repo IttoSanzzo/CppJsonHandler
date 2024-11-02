@@ -27,15 +27,15 @@ class JsonNode {
 		std::string	GetName(void) const;
 		JsonNode*	GetParent(void) const;
 		size_t		GetSize(void) const;
-		JsonData*	FindData(std::string name);
+		JsonData*	FindData(const std::string& name);
 	// 0. Member Functions
-		DataNode*	TryPushData(const JsonData& data);
-		DataNode*	TryPushData(std::string name, bool value);
-		DataNode*	TryPushData(std::string name, int value);
-		DataNode*	TryPushData(std::string name, double value);
-		DataNode*	TryPushData(std::string name, const std::string& value);
-		DataNode*	TryPushData(std::string name, const JsonNode& value);
-		void	DeleteData(std::string name);
+		void		DeleteData(std::string name);
+		JsonData*	TryPushData(const JsonData& data);
+		JsonData*	TryPushData(const std::string& name, bool value);
+		JsonData*	TryPushData(const std::string& name, int value);
+		JsonData*	TryPushData(const std::string& name, double value);
+		JsonData*	TryPushData(const std::string& name, const std::string& value);
+		JsonData*	TryPushData(const std::string& name, const JsonNode& value);
 		bool		TryGetBool(const std::string& name);
 		int			TryGetInt(const std::string& name);
 		double		TryGetDouble(const std::string& name);
@@ -46,9 +46,10 @@ class JsonNode {
 	// 0. Private Functions
 		void	DeepCopy(const JsonNode& src);
 		void	DestroyDataNode(DataNode* node);
-		DataNode*	TryCreateDataNode(JsonData* data, std::string* targetName, size_t targetSize);
+		JsonData*	PushDataDoor(const std::string& name, const DataValue& value, const DataType& type);
+		DataNode*	TryCreateDataNode(JsonData* data, const std::string* targetName, size_t targetSize);
 		DataNode*	CreateSimpleDataNode(JsonData* data);
-		JsonData*	FindData(std::string* name);
+		JsonData*	FindData(const std::string* name);
 };
 
 #endif
