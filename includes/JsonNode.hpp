@@ -6,6 +6,7 @@
 
 // 1. Class Declaration
 class JsonNode {
+	friend class JsonData;
 	private:
 	// M. Member Variables
 		std::string	Name;
@@ -29,7 +30,7 @@ class JsonNode {
 		size_t		GetSize(void) const;
 		JsonData*	FindData(const std::string& name);
 	// 0. Member Functions
-		std::string	ToString(const bool& withLineBreaks = true);
+		std::string	ToString(const bool& withLineBreaks = true) const;
 		void		DeleteData(std::string name);
 		JsonData*	TryPushData(const JsonData& data);
 		JsonData*	TryPushData(const std::string& name, bool value);
@@ -51,6 +52,8 @@ class JsonNode {
 		DataNode*	TryCreateDataNode(JsonData* data, const std::string* targetName, size_t targetSize);
 		DataNode*	CreateSimpleDataNode(JsonData* data);
 		JsonData*	FindData(const std::string* name);
+		std::string	ToString(const bool& withLineBreaks, const size_t& depth) const;
+		std::string	ToStringTab(const bool& withTabs, const bool& withBreak, short depth) const;
 };
 
 #endif

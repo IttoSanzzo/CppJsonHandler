@@ -3,6 +3,7 @@
 
 // 0. External Includes
 # include "iostream"
+# include "sstream"
 # include "typeinfo"
 # include "exception"
 

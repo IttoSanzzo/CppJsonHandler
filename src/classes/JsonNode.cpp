@@ -87,24 +87,8 @@ void		JsonNode::DeleteData(std::string name) {
 		}
 	}
 }
-std::string	JsonNode::ToString(const bool& withLineBreaks) {
-	(void)withLineBreaks;
-	std::string jsonString = "{";
-	DataNode*	dataNode = this->DataNodes;
-	while (dataNode != NULL) {
-		jsonString += dataNode->ToString(withLineBreaks);
-		if (dataNode->Next != NULL)
-			switch (withLineBreaks) {
-				case (true):
-					jsonString =+ ",\n";
-				break;
-				case (false):
-					jsonString =+ ",";
-				break;
-			}
-		dataNode = dataNode->Next;
-	}
-	return (jsonString + "}");
+std::string	JsonNode::ToString(const bool& withLineBreaks) const {
+	return (this->ToString(withLineBreaks, 1));
 }
 
 // 0.1 TryPushes
@@ -254,6 +238,40 @@ JsonData*	JsonNode::FindData(const std::string* targetName) {
 		return (NULL);
 	JsonData* targetData = node->Data->Value.ChildValue->FindData(targetName + 1);
 	return (targetData);
+}
+std::string	JsonNode::ToString(const bool& withLineBreaks, const size_t& depth) const {
+	DataNode*	dataNode = this->DataNodes;
+	std::string jsonString = "{";
+	if (dataNode != NULL && withLineBreaks == true)
+		jsonString += "\n";
+	while (dataNode != NULL) {
+		if (dataNode->Data == NULL) {
+			dataNode = dataNode->Next;
+			continue;
+		}
+		jsonString += this->ToStringTab(withLineBreaks, dataNode->Previous != NULL, depth);
+		jsonString += dataNode->Data->ToString(withLineBreaks, depth + 1);
+		if (dataNode->Next != NULL) {
+			if (withLineBreaks == true)
+				jsonString += ",";
+			else
+				jsonString += ", ";
+		}
+		dataNode = dataNode->Next;
+	}
+	jsonString += this->ToStringTab(withLineBreaks, true, depth - 1);
+	return (jsonString + "}");
+}
+std::string	JsonNode::ToStringTab(const bool& withTabs, const bool& withBreak, short depth) const {
+	if (withTabs == true) {
+		std::string	tabs;
+		if (withBreak == true)
+			tabs = "\n";
+		while (--depth >= 0)
+			tabs += '\t';
+		return (tabs);
+	}
+	return ("");
 }
 
 // 3. Static Util Functions

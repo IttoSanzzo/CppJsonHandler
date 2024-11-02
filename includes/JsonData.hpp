@@ -46,11 +46,18 @@ class JsonData {
 		double			TryGetDouble(void);
 		std::string		TryGetString(void);
 		JsonNode		TryGetChild(void);
+	// 0. Member Functions
+		std::string	ToString(const bool& withLineBreaks, const size_t& depth) const;
 	private:
 	// 0. Private Functions
 		void		DeepCopy(const JsonData& src);
 		std::string	DataTypeName(const DataType& type);
 		std::string	DataTypeName();
+		std::string	ToString(const bool& value) const;
+		std::string	ToString(const int& value) const;
+		std::string	ToString(const double& value) const;
+		std::string	ToString(const std::string* value) const;
+		std::string	ToString(const JsonNode* value, const bool& withLineBreaks, const size_t& depth) const;
 };
 
 #endif

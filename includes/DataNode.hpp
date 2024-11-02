@@ -34,7 +34,6 @@ class DataNode {
 		DataNode*	GetFirst(void);
 		DataNode*	GetLast(void);
 	// 0. Member Functions
-		std::string	ToString(const bool& withLineBreaks = true);
 		DataNode*	FindNode(const std::string& name);
 
 	private:

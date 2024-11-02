@@ -149,8 +149,31 @@ JsonNode	JsonData::TryGetChild(void) {
 		return (*this->Value.ChildValue);
 	throw JsonException("TryGetChild..: Not this type, the correct one is: '" + this->DataTypeName() + "'.");
 }
+// 0. Member Functions
+std::string	JsonData::ToString(const bool& withLineBreaks, const size_t& depth) const {
+	switch (this->Type) {
+		case (Bool):
+			return (this->ToString(this->Value.BoolValue));
+		break;
+		case (Int):
+			return (this->ToString(this->Value.IntValue));
+		break;
+		case (Double):
+			return (this->ToString(this->Value.DoubleValue));
+		break;
+		case (String):
+			return (this->ToString(this->Value.StringValue));
+		break;
+		case (Child):
+			return (this->ToString(this->Value.ChildValue, withLineBreaks, depth));
+		break;
+		default:
+			return ("UNKNOWN ERROR");
+		break;
+	}
+}
 
-// 0. Private Functions
+// 1. Private Functions
 void		JsonData::DeepCopy(const JsonData& src) {
 	this->Name = src.Name;
 	this->Type = src.Type;
@@ -195,4 +218,47 @@ std::string	JsonData::DataTypeName(const DataType& type) {
 		default:
 			return "Unknown";
 	}
+}
+std::string	JsonData::ToString(const bool& value) const {
+	std::string	jsonString = "\"";
+	jsonString += this->Name;
+	jsonString += "\": ";
+	if (value == true)
+		jsonString += "true";
+	else
+		jsonString += "false";
+	return (jsonString);
+}
+std::string	JsonData::ToString(const int& value) const {
+	std::ostringstream	oss;
+	oss << value;
+	std::string	jsonString = "\"";
+	jsonString += this->Name;
+	jsonString += "\": ";
+	jsonString += oss.str();
+	return (jsonString);
+}
+std::string	JsonData::ToString(const double& value) const {
+	std::ostringstream	oss;
+	oss << value;
+	std::string	jsonString = "\"";
+	jsonString += this->Name;
+	jsonString += "\": ";
+	jsonString += oss.str();
+	return (jsonString);
+}
+std::string	JsonData::ToString(const std::string* value) const {
+	std::string	jsonString = "\"";
+	jsonString += this->Name;
+	jsonString += "\": \"";
+	jsonString += *value;
+	jsonString += "\"";
+	return (jsonString);
+}
+std::string	JsonData::ToString(const JsonNode* value, const bool& withLineBreaks, const size_t& depth) const {
+	std::string	jsonString = "\"";
+	jsonString += this->Name;
+	jsonString += "\":";
+	jsonString += value->ToString(withLineBreaks, depth);
+	return (jsonString);
 }
