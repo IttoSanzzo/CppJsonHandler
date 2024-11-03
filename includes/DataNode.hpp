@@ -25,7 +25,7 @@ class DataNode {
 		void		SetPrevious(DataNode* previous);
 		void		SetNext(DataNode* next);
 		void		SetData(JsonData* data);
-		
+
 	// G. Getters
 		DataNode*	GetPrevious(void) const;
 		DataNode*	GetNext(void) const;

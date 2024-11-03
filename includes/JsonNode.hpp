@@ -43,9 +43,12 @@ class JsonNode {
 		double		TryGetDouble(const std::string& name);
 		std::string	TryGetString(const std::string& name);
 		JsonNode	TryGetChild(const std::string& name);
+	// 1. Readers
+		static JsonNode	TryReadJsonFromString(const std::string& jsonString);
+		static JsonNode	TryReadJsonFromFile(const std::string& pathToFile);
 
 	private:
-	// 0. Private Functions
+	// P. Private Functions
 		void	DeepCopy(const JsonNode& src);
 		void	DestroyDataNode(DataNode* node);
 		JsonData*	PushDataDoor(const std::string& name, const DataValue& value, const DataType& type);

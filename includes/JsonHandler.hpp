@@ -4,6 +4,7 @@
 // 0. External Includes
 # include "iostream"
 # include "sstream"
+# include "fstream"
 # include "typeinfo"
 # include "exception"
 
@@ -29,12 +30,17 @@ union DataValue {
 	std::string*	StringValue;
 	JsonNode*		ChildValue;
 };
+struct TokenInfo {
+	char	Type;
+	size_t	Position;
+	TokenInfo(char token, size_t position) : Type(token), Position(position) {};
+};
 
 // 3. Internal Classes
 # include "JsonException.hpp"
 # include "JsonNode.hpp"
 # include "JsonData.hpp"
 # include "DataNode.hpp"
-# include "JsonReader.hpp"
+# include "JsonParser.hpp"
 
 #endif

@@ -28,7 +28,7 @@ DS_CLAS	=	classes/
 N_CLAS	=	JsonNode.cpp	\
 			DataNode.cpp	\
 			JsonData.cpp	\
-			JsonReader.cpp	\
+			JsonParser.cpp	\
 
 # 3. Source Manipulation
 F_SRCS	=	$(addprefix $(D_SRCS)$(DS_CLAS), $(N_CLAS))
