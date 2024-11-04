@@ -176,19 +176,19 @@ JsonNode	JsonNode::TryGetChild(const std::string& name) {
 	return (data->TryGetChild());
 }
 // 0.4
-JsonNode	JsonNode::TryReadJsonFromString(const std::string& jsonString) {
+JsonNode	JsonNode::TryParseJsonFromString(const std::string& jsonString) {
 	JsonParser	reader(jsonString);
 	return (reader.ReadJson());
 }
-JsonNode	JsonNode::TryReadJsonFromFile(const std::string& pathToFile) {
+JsonNode	JsonNode::TryParseJsonFromFile(const std::string& pathToFile) {
 	if (pathToFile.find(".json") != pathToFile.size() - 5)
-		throw (JsonException("TryReadJsonFromFile..: '" + pathToFile + "' is not a valid json."));
+		throw (JsonException("TryParseJsonFromFile..: '" + pathToFile + "' is not a valid json."));
 	std::ifstream in(pathToFile.c_str());
 	if (in.good() == false)
-		throw (JsonException("TryReadJsonFromFile..: '" + pathToFile + "' seems to not exist, or cannot be opened."));
+		throw (JsonException("TryParseJsonFromFile..: '" + pathToFile + "' seems to not exist, or cannot be opened."));
 	std::string jsonString((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
 	in.close();
-	return (JsonNode::TryReadJsonFromString(jsonString));
+	return (JsonNode::TryParseJsonFromString(jsonString));
 }
 
 // P. Private Functions

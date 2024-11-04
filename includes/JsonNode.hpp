@@ -44,8 +44,8 @@ class JsonNode {
 		std::string	TryGetString(const std::string& name);
 		JsonNode	TryGetChild(const std::string& name);
 	// 1. Readers
-		static JsonNode	TryReadJsonFromString(const std::string& jsonString);
-		static JsonNode	TryReadJsonFromFile(const std::string& pathToFile);
+		static JsonNode	TryParseJsonFromString(const std::string& jsonString);
+		static JsonNode	TryParseJsonFromFile(const std::string& pathToFile);
 
 	private:
 	// P. Private Functions
