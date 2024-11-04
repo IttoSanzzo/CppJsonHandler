@@ -11,7 +11,8 @@ class JsonParser {
 	// M. Member Variables
 		std::string		parsingString;
 		std::string		refinedString;
-		std::string*	totalParts;
+		std::string		elementName;
+		size_t			globalIndex;
 		JsonParser(const std::string& jsonString);
 		~JsonParser(void);
 	public:
@@ -26,12 +27,16 @@ class JsonParser {
 	private:
 	// 0. Private Functions
 		bool		DoGlobalBrakets(const std::string& jsonString);
-		size_t		DoNextElement(const size_t& startOfQuotes, JsonNode& jsonNode);
-		TokenInfo	GetNextToken(const std::string& srcString, size_t startingPos = 0) const;
+		void		DoNextElement(JsonNode& jsonNode);
+		void		DoElementName(void);
+		void		DoElementValue(JsonNode& jsonNode);
+		void		PushStringElement(JsonNode& jsonNode);
+		void		PushBoolElement(JsonNode& jsonNode, const bool& type);
+		void		PushNumberElement(JsonNode& jsonNode);
+		size_t		GetNextSimpleColon(size_t currentIndex);
+		TokenInfo	GetNextToken(const std::string& srcString, size_t startingPos) const;
 		TokenInfo	GetReverseNextToken(const std::string& srcString, size_t startingPos) const;
 		size_t		GetNextDoubleQuotes(const std::string& srcString, size_t startingPos) const;
-		void		NullFreeTotalParts(void);
-
 };
 
 #endif
