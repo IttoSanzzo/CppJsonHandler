@@ -258,6 +258,8 @@ JsonData*	JsonNode::FindData(const std::string* targetName) {
 	return (targetData);
 }
 std::string	JsonNode::ToString(const bool& withLineBreaks, const size_t& depth) const {
+	if (this->DataNodes == NULL)
+		return ("{}");
 	DataNode*	dataNode = this->DataNodes;
 	std::string jsonString = "{";
 	if (dataNode != NULL && withLineBreaks == true)

@@ -4,14 +4,11 @@
 bool	IsNumber(const char& character);
 
 // D. Destructor
-JsonParser::~JsonParser(void) {
-	std::cout << "Json Reader Destructed" << std::endl;
-}
+JsonParser::~JsonParser(void) {}
 // CC. Common Constructors
 JsonParser::JsonParser(const std::string& jsonString) {
 	this->parsingString = jsonString;
 	this->globalIndex = 0;
-	std::cout << "Json Reader Constructed" << std::endl;
 }
 
 // 0. Member Functions
@@ -37,14 +34,11 @@ bool		JsonParser::DoGlobalBrakets(const std::string& jsonString) {
 }
 void		JsonParser::DoNextElement(JsonNode& jsonNode) {
 	this->DoElementName();
-	std::cout << "|" << this->elementName << "|\n";
 	TokenInfo colon = this->GetNextToken(this->parsingString, this->globalIndex + 1);
 	if (colon.Type != ':')
 		throw (JsonException("ReadJson..: Not a valid JSON."));
 	this->globalIndex = colon.Position + 1;
 	this->DoElementValue(jsonNode);
-	if (this->globalIndex == this->parsingString.size())
-		std::cout << "LASTONE HERE" << std::endl;
 }
 void		JsonParser::DoElementName(void) {
 	TokenInfo startOfQuotes = this->GetNextToken(this->parsingString, this->globalIndex);
@@ -88,8 +82,8 @@ void		JsonParser::PushStringElement(JsonNode& jsonNode) {
 	size_t endOfString = this->GetNextDoubleQuotes(this->parsingString, this->globalIndex + 1);
 	if (endOfString == std::string::npos)
 		throw (JsonException("ReadJson..: Not a valid JSON."));
-	std::string value = this->parsingString.substr(this->globalIndex + 1, endOfString - this->globalIndex - 1); 
-	this->globalIndex = this->GetNextElementIndex(endOfString);
+	std::string value = this->parsingString.substr(this->globalIndex + 1, endOfString - this->globalIndex - 1);
+	this->globalIndex = this->GetNextElementIndex(endOfString + 1);
 	jsonNode.TryPushData(this->elementName, value);
 }
 void		JsonParser::PushBoolElement(JsonNode& jsonNode, const bool& type) {
@@ -141,22 +135,20 @@ std::pair<DataValue, DataType>	JsonParser::GetNumberDataFromString(const std::st
 	return (std::make_pair(value, Int));
 }
 void		JsonParser::PushChildElement(JsonNode& jsonNode) {
-	std::string	childJsonString;
-
 	size_t	closingBracket = this->GetClosingBraket(this->parsingString, this->globalIndex + 1);
 	if (closingBracket == std::string::npos)
 		throw (JsonException("ReadJson..: Not a valid JSON."));
-	childJsonString = this->parsingString.substr(this->globalIndex, closingBracket - this->globalIndex + 1);
-	this->globalIndex = this->GetNextElementIndex(closingBracket);
+	std::string	childJsonString = this->parsingString.substr(this->globalIndex, closingBracket - this->globalIndex + 1);
+	this->globalIndex = this->GetNextElementIndex(closingBracket + 1);
 	jsonNode.TryPushData(this->elementName, JsonNode::TryParseJsonFromString(childJsonString));
 }
 size_t		JsonParser::GetNextElementIndex(size_t currentIndex) {
-	TokenInfo	colon = this->GetNextToken(this->parsingString, currentIndex);
-	if (colon.Type != ',' && colon.Type != '\0')
+	TokenInfo	comma = this->GetNextToken(this->parsingString, currentIndex);
+	if (comma.Type != ',' && comma.Type != '\0')
 		throw (JsonException("ReadJson..: Not a valid JSON."));
-	if (colon.Type == '\0')
+	if (comma.Type == '\0')
 		return (this->parsingString.size());
-	return (colon.Position + 1);
+	return (comma.Position + 1);
 }
 TokenInfo	JsonParser::GetNextToken(const std::string& srcString, size_t startingPos) const {
 	for (size_t i = startingPos; i < srcString.size(); ++i)
