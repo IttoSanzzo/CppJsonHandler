@@ -1,7 +1,8 @@
 #include "JsonHandler.hpp"
 
 // 0. Static Functions Protorypes
-bool	IsNumber(const char& character);
+bool		IsNumber(const char& character);
+std::string	ProcessEscapes(const std::string& sourceString);
 
 // D. Destructor
 JsonParser::~JsonParser(void) {}
@@ -84,7 +85,7 @@ void		JsonParser::PushStringElement(JsonNode& jsonNode) {
 		throw (JsonException("ReadJson..: Not a valid JSON."));
 	std::string value = this->parsingString.substr(this->globalIndex + 1, endOfString - this->globalIndex - 1);
 	this->globalIndex = this->GetNextElementIndex(endOfString + 1);
-	jsonNode.TryPushData(this->elementName, value);
+	jsonNode.TryPushData(this->elementName, ProcessEscapes(value));
 }
 void		JsonParser::PushBoolElement(JsonNode& jsonNode, const bool& type) {
 	switch (type) {
@@ -215,6 +216,41 @@ size_t		JsonParser::GetClosingBraket(const std::string& bracketString, size_t cu
 }
 
 // 2. Static Functions
-bool	IsNumber(const char& character) {
+bool		IsNumber(const char& character) {
 	return (character >= '0' && character <= '9');
+}
+std::string	ProcessEscapes(const std::string& sourceString) {
+    std::string	result;
+    result.reserve(sourceString.size());
+    for (size_t i = 0; i < sourceString.size(); ++i) {
+        if (sourceString[i] == '\\' && i + 1 < sourceString.size()) {
+            switch (sourceString[i + 1]) {
+                case ('n'):
+					result.push_back('\n');
+					++i;
+				break;
+                case ('t'):
+					result.push_back('\t');
+					++i;
+				break;
+                case ('r'):
+					result.push_back('\r');
+					++i;
+				break;
+                case ('\\'):
+					result.push_back('\\');
+					++i;
+				break;
+                case ('"'):
+					result.push_back('\"');
+					++i;
+				break;
+                default:
+					result.push_back(sourceString[i]);
+				break;
+            }
+        } else
+            result.push_back(sourceString[i]);
+    }
+    return result;
 }

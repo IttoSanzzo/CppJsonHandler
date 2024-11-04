@@ -14,21 +14,17 @@ JsonData::~JsonData(void) {
 		default:
 		break;
 	}
-	// std::cout << "JsonData " << this->Name << " Destructed!" << std::endl;
 }
 // CC. Common Constructors
 JsonData::JsonData(void) {
 	this->Name = "data";
 	this->Type = None;
-	// std::cout << "JsonData " << this->Name << " Default Constructed!" << std::endl;
 }
 JsonData::JsonData(const JsonData& src) {
 	this->DeepCopy(src);
-	// std::cout << "JsonData " << this->Name << " Source Constructed!" << std::endl;
 }
 JsonData& JsonData::operator=(const JsonData& src) {
 	this->DeepCopy(src);
-	// std::cout << "JsonData " << this->Name << " Operator= Constructed!" << std::endl;
 	return (*this);
 }
 // OC. Other Contructors
@@ -40,35 +36,29 @@ JsonData::JsonData(const std::string& name, const DataValue& value, const DataTy
 JsonData::JsonData(const std::string& name, const bool& value) {
 	this->Name = name;
 	this->SetValue(value);
-	// std::cout << "JsonData " << this->Name << " Bool Constructed!" << std::endl;
 }
 JsonData::JsonData(const std::string& name, const int& value) {
 	this->Name = name;
 	this->SetValue(value);
-	// std::cout << "JsonData " << this->Name << " Int Constructed!" << std::endl;
 }
 JsonData::JsonData(const std::string& name, const double& value) {
 	this->Name = name;
 	this->SetValue(value);
-	// std::cout << "JsonData " << this->Name << " Double Constructed!" << std::endl;
 }
 JsonData::JsonData(const std::string& name, const std::string& value) {
 	this->Name = name;
 	this->Type = None;
 	this->SetValue(value);
-	// std::cout << "JsonData " << this->Name << " String Constructed!" << std::endl;
 }
 JsonData::JsonData(const std::string& name, const JsonNode& value) {
 	this->Name = name;
 	this->Type = None;
 	this->SetValue(value);
-	// std::cout << "JsonData " << this->Name << " Child Constructed!" << std::endl;
 }
 JsonData::JsonData(const std::string& name, const JsonNode* value) {
 	this->Name = name;
 	this->Type = None;
 	this->SetValue(value);
-	// std::cout << "JsonData " << this->Name << " Child Constructed!" << std::endl;
 }
 
 // S. Setters

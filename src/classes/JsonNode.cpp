@@ -8,7 +8,6 @@ static size_t		StringArrayLength(const std::string* str);
 JsonNode::~JsonNode(void) {
 	if (this->DataNodes != NULL)
 		delete this->DataNodes;
-	// std::cout << "JsonNode " << this->Name << " Destructed" << std::endl;
 }
 // CC. Common Constructors
 JsonNode::JsonNode(void) {
@@ -16,7 +15,6 @@ JsonNode::JsonNode(void) {
 	this->Parent = NULL;
 	this->Size = 0;
 	this->DataNodes = NULL;
-	// std::cout << "JsonNode " << this->Name << " Default Constructor Called!" << std::endl;
 }
 JsonNode::JsonNode(const JsonNode& src) {
 	this->DeepCopy(src);
@@ -32,7 +30,6 @@ JsonNode::JsonNode(std::string name) {
 	this->Parent = NULL;
 	this->Size = 0;
 	this->DataNodes = NULL;
-	// std::cout << "JsonNode " << this->Name << " Default Constructor Called!" << std::endl;
 }
 
 // S. Setters

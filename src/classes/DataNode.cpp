@@ -6,14 +6,12 @@ DataNode::~DataNode(void) {
 		delete this->Data;
 	if (this->Next != NULL)
 		delete this->Next;
-	// std::cout << "DataNode " << " Destructed" << std::endl;
 }
 // CC. Common Constructors
 DataNode::DataNode(void) {
 	this->Previous = NULL;
 	this->Next = NULL;
 	this->Data = NULL;
-	// std::cout << "DataNode " << " Default Constructor Called!" << std::endl;
 }
 DataNode::DataNode(const DataNode& src) {
 	this->DeepCopy(src);
