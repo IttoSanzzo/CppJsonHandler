@@ -23,6 +23,7 @@ JsonNode	JsonParser::ReadJson(void) {
 		this->DoNextElement(buildingJsonNode);
 		this->DoNextElement(buildingJsonNode);
 		this->DoNextElement(buildingJsonNode);
+		this->DoNextElement(buildingJsonNode);
 		this->globalIndex = std::string::npos;
 	}
 	return (buildingJsonNode);
@@ -55,7 +56,7 @@ void		JsonParser::DoElementName(void) {
 	if (this->globalIndex == std::string::npos)
 		throw (JsonException("ReadJson..: Not a valid JSON."));
 	this->elementName = this->parsingString.substr(startOfQuotes.Position + 1, this->globalIndex - startOfQuotes.Position - 1);
-	if (this->elementName.empty() == true)
+	if (this->elementName.empty() == true || this->elementName.find('.') != std::string::npos)
 		throw (JsonException("ReadJson..: Not a valid JSON."));
 }
 void		JsonParser::DoElementValue(JsonNode& jsonNode) {
@@ -96,11 +97,9 @@ void		JsonParser::PushStringElement(JsonNode& jsonNode) {
 void		JsonParser::PushBoolElement(JsonNode& jsonNode, const bool& type) {
 	switch (type) {
 		case (true):
-			std::cout << "TRUE? -> |" << this->parsingString.substr(this->globalIndex, 4) << "|" << std::endl;
 			if (this->parsingString.substr(this->globalIndex, 4) != "true")
 				throw (JsonException("ReadJson..: Not a valid JSON."));
 			this->globalIndex += 4;
-			std::cout << "|" << this->parsingString[this->globalIndex] << "|" << std::endl;
 		break;
 		case (false):
 			if (this->parsingString.substr(this->globalIndex, 5) != "false")
@@ -112,8 +111,35 @@ void		JsonParser::PushBoolElement(JsonNode& jsonNode, const bool& type) {
 	jsonNode.TryPushData(this->elementName, type);
 }
 void		JsonParser::PushNumberElement(JsonNode& jsonNode) {
-	this->globalIndex = this->GetNextSimpleColon(this->globalIndex);
-	jsonNode.TryPushData(this->elementName, type);
+	std::cout << "Push Number Entered!" << std::endl;
+	std::string numberString;
+
+
+	size_t	colon = this->parsingString.find(',', this->globalIndex);
+	if (colon != std::string::npos)
+		numberString = this->parsingString.substr(this->globalIndex, colon - this->globalIndex);
+	else
+		numberString = this->parsingString.substr(this->globalIndex);
+	std::cout << "|" << numberString << "|" << std::endl;
+	std::pair<DataValue, DataType>	numberData = this.GetNumberDataFromString(const std::string& numberString);
+	jsonNode.TryPushData(JsonData(this->elementName, numberData.first, numberData.second));
+	(void)jsonNode;
+}
+std::pair<DataValue, DataType>	JsonParser::GetNumberDataFromString(const std::string& numberString) {
+	DataValue	value;
+	DataType	type;
+	short		dots = 0;
+	for (size_t i = 0; i < numberString.size(); ++i) {
+		if (numberString[i] == '.' && dots++ != 0)
+			throw (JsonException("ReadJson..: Not a valid JSON."));
+
+	}
+	if (dots == 1) {
+		// value.DoubleValue = ;
+		return (std::make_pair(value, Double));
+	}
+	// value.IntValue = ;
+	return (std::make_pair(value, Int));
 }
 size_t		JsonParser::GetNextSimpleColon(size_t currentIndex) {
 	TokenInfo	colon = this->GetNextToken(this->parsingString, currentIndex);
@@ -122,21 +148,12 @@ size_t		JsonParser::GetNextSimpleColon(size_t currentIndex) {
 	return (colon.Position + 1);
 }
 TokenInfo	JsonParser::GetNextToken(const std::string& srcString, size_t startingPos) const {
-	for (size_t i = startingPos; i < srcString.size(); ++i) {
+	for (size_t i = startingPos; i < srcString.size(); ++i)
 		switch (srcString[i]) {
 			case ('"'):
 				if (i == 0 || srcString[i - 1] != '\\')
 					return (TokenInfo('"', i));
 				continue;
-			break;
-			case (':'):
-				return (TokenInfo(':', i));
-			break;
-			case ('{'):
-				return (TokenInfo('{', i));
-			break;
-			case ('}'):
-				return (TokenInfo('}', i));
 			break;
 			case ('\t'):
 				continue;
@@ -151,25 +168,15 @@ TokenInfo	JsonParser::GetNextToken(const std::string& srcString, size_t starting
 				return (TokenInfo(srcString[i], i));
 			break;
 		}
-	}
 	return (TokenInfo('\0', std::string::npos));
 }
 TokenInfo	JsonParser::GetReverseNextToken(const std::string& srcString, size_t startingPos) const {
-	for (short i = startingPos; i >= 0; --i) {
+	for (short i = startingPos; i >= 0; --i)
 		switch (srcString[i]) {
 			case ('"'):
 				if (i == 0 || srcString[i - 1] != '\\')
 					return (TokenInfo('"', i));
 				continue;
-			break;
-			case (':'):
-				return (TokenInfo(':', i));
-			break;
-			case ('{'):
-				return (TokenInfo('{', i));
-			break;
-			case ('}'):
-				return (TokenInfo('}', i));
 			break;
 			case ('\t'):
 				continue;
@@ -184,13 +191,11 @@ TokenInfo	JsonParser::GetReverseNextToken(const std::string& srcString, size_t s
 				return (TokenInfo(srcString[i], i));
 			break;
 		}
-	}
 	return (TokenInfo('\0', std::string::npos));
 }
 size_t		JsonParser::GetNextDoubleQuotes(const std::string& srcString, size_t startingPos) const {
-	for (size_t i = startingPos; i < srcString.size(); ++i) {
+	for (size_t i = startingPos; i < srcString.size(); ++i)
 		if (srcString[i] == '"' && (i == 0 || srcString[i - 1] != '\\'))
 			return (i);
-	}
 	return (std::string::npos);
 }

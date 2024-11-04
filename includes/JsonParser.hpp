@@ -33,6 +33,7 @@ class JsonParser {
 		void		PushStringElement(JsonNode& jsonNode);
 		void		PushBoolElement(JsonNode& jsonNode, const bool& type);
 		void		PushNumberElement(JsonNode& jsonNode);
+		std::pair<DataValue, DataType>	GetNumberDataFromString(const std::string& numberString);
 		size_t		GetNextSimpleColon(size_t currentIndex);
 		TokenInfo	GetNextToken(const std::string& srcString, size_t startingPos) const;
 		TokenInfo	GetReverseNextToken(const std::string& srcString, size_t startingPos) const;
