@@ -10,8 +10,10 @@
 
 // 1. Class Declarations
 class JsonNode;
-class DataNode;
 class JsonData;
+class DataNode;
+class JsonChildren;
+class ChildrenNode;
 
 // 2. Data Structures
 enum DataType {
@@ -41,6 +43,8 @@ struct TokenInfo {
 # include "JsonNode.hpp"
 # include "JsonData.hpp"
 # include "DataNode.hpp"
+# include "JsonChildren.hpp"
+# include "ChildrenNode.hpp"
 # include "JsonParser.hpp"
 
 #endif

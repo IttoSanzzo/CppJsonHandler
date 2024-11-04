@@ -248,7 +248,7 @@ std::string	JsonData::ToString(const std::string* value) const {
 std::string	JsonData::ToString(const JsonNode* value, const bool& withLineBreaks, const size_t& depth) const {
 	std::string	jsonString = "\"";
 	jsonString += this->Name;
-	jsonString += "\":";
+	jsonString += "\": ";
 	jsonString += value->ToString(withLineBreaks, depth);
 	return (jsonString);
 }
