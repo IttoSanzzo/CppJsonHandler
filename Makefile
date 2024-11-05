@@ -25,10 +25,11 @@ D_OBJS	= obj/
 
 # 2. Sources & Objects
 DS_CLAS	=	classes/
-N_CLAS	=	JsonNode.cpp	\
-			DataNode.cpp	\
-			JsonData.cpp	\
-			JsonParser.cpp	\
+N_CLAS	=	JsonNode.cpp		\
+			DataNode.cpp		\
+			JsonData.cpp		\
+			JsonChildren.cpp	\
+			JsonParser.cpp		\
 
 # 3. Source Manipulation
 F_SRCS	=	$(addprefix $(D_SRCS)$(DS_CLAS), $(N_CLAS))

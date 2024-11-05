@@ -38,10 +38,15 @@ std::string	JsonChildren::GetName(void) const {
 size_t		JsonChildren::GetSize(void) const {
 	return (this->Size);
 }
-JsonData	JsonChildren::GetChild(const size_t& position) const {
+JsonData	JsonChildren::GetChildData(const size_t& position) const {
 	if (position >= this->Size)
 		return (JsonData());
 	return (*this->Childs->GetPos(position)->Data);
+}
+JsonNode	JsonChildren::GetChildNode(const size_t& position) const {
+	if (position >= this->Size)
+		return (JsonNode());
+	return (*this->Childs->GetPos(position)->Data->Value.ChildValue);
 }
 
 // 0. Member Functions
@@ -66,7 +71,7 @@ JsonData*	JsonChildren::PushChild(const JsonNode& child, const size_t& targetPos
 	DataNode* targetChild = this->Childs->GetPos(targetPosition);
 	if (targetChild->Data != NULL)
 		delete targetChild->Data;
-	targetChild->Data = new JsonData(child.Name, child);
+	return (targetChild->Data = new JsonData(child.Name, child));
 }
 
 // P. Private Functions
@@ -74,7 +79,7 @@ void		JsonChildren::DeepCopy(const JsonChildren& src) {
 	this->Name = src.Name;
 	this->Size = src.Size;
 	if (src.Childs != NULL)
-		this->Childs = src.Childs->GetFirst()->ListCopy();
+		this->Childs = src.Childs->ListCopy();
 	else
 		this->Childs = NULL;
 }

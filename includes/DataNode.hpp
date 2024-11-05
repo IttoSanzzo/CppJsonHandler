@@ -8,6 +8,7 @@
 class DataNode {
 	friend class JsonNode;
 	friend class JsonChildren;
+	friend class JsonData;
 	private:
 	// M. Member Variables
 		DataNode*	Previous;

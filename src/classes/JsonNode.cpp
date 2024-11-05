@@ -136,7 +136,7 @@ JsonData*	JsonNode::TryPushData(const std::string& name, const JsonNode& value) 
 JsonData*	JsonNode::TryPushData(const std::string& name, const JsonChildren& value) {
 	DataValue	dataValue;
 	dataValue.ChildrenValue = new JsonChildren(value);
-	return (this->PushDataDoor(name, dataValue, Child));
+	return (this->PushDataDoor(name, dataValue, Children));
 }
 // 0.3 TryGets
 bool			JsonNode::TryGetBool(const std::string& name) {
@@ -196,7 +196,7 @@ void		JsonNode::DeepCopy(const JsonNode& src) {
 	this->Name = src.Name;
 	this->Size = src.Size;
 	if (src.DataNodes != NULL)
-		this->DataNodes = src.DataNodes->GetFirst()->ListCopy();
+		this->DataNodes = src.DataNodes->ListCopy();
 	else
 		this->DataNodes = NULL;
 }

@@ -109,36 +109,36 @@ void	JsonData::SetValue(const JsonNode* value) {
 }
 
 // G. Getters
-std::string	JsonData::GetName(void) const {
+std::string		JsonData::GetName(void) const {
 	return (this->Name);
 }
-DataType	JsonData::GetType(void) const {
+DataType		JsonData::GetType(void) const {
 	return (this->Type);
 }
-DataValue	JsonData::GetValue(void) const {
+DataValue		JsonData::GetValue(void) const {
 	return (this->Value);
 }
-bool		JsonData::TryGetBool(void) {
+bool			JsonData::TryGetBool(void) {
 	if (this->Type == Bool)
 		return (this->Value.BoolValue);
 	throw JsonException("TryGetBool..: Not this type, the correct one is: '" + this->DataTypeName() + "'.");
 }
-int			JsonData::TryGetInt(void) {
+int				JsonData::TryGetInt(void) {
 	if (this->Type == Int)
 		return (this->Value.IntValue);
 	throw JsonException("TryGetInt..: Not this type, the correct one is: '" + this->DataTypeName() + "'.");
 }
-double		JsonData::TryGetDouble(void) {
+double			JsonData::TryGetDouble(void) {
 	if (this->Type == Double)
 		return (this->Value.DoubleValue);
 	throw JsonException("TryGetDouble..: Not this type, the correct one is: '" + this->DataTypeName() + "'.");
 }
-std::string	JsonData::TryGetString(void) {
+std::string		JsonData::TryGetString(void) {
 	if (this->Type == String)
 		return (*this->Value.StringValue);
 	throw JsonException("TryGetString..: Not this type, the correct one is: '" + this->DataTypeName() + "'.");
 }
-JsonNode	JsonData::TryGetChild(void) {
+JsonNode		JsonData::TryGetChild(void) {
 	if (this->Type == Child)
 		return (*this->Value.ChildValue);
 	throw JsonException("TryGetChild..: Not this type, the correct one is: '" + this->DataTypeName() + "'.");
@@ -165,6 +165,9 @@ std::string	JsonData::ToString(const bool& withLineBreaks, const size_t& depth) 
 		break;
 		case (Child):
 			return (this->ToString(this->Value.ChildValue, withLineBreaks, depth));
+		break;
+		case (Children):
+			return (this->ToString(this->Value.ChildrenValue, withLineBreaks, depth));
 		break;
 		default:
 			return ("UNKNOWN ERROR");
@@ -260,4 +263,31 @@ std::string	JsonData::ToString(const JsonNode* value, const bool& withLineBreaks
 	jsonString += "\": ";
 	jsonString += value->ToString(withLineBreaks, depth);
 	return (jsonString);
+}
+std::string	JsonData::ToString(const JsonChildren* value, const bool& withLineBreaks, const size_t& depth) const {
+	std::string	jsonString = "\"";
+	jsonString += this->Name;
+	jsonString += "\": [";
+	if (value->Size == 0)
+		return (jsonString + ']');
+	if (withLineBreaks == true)
+		jsonString += '\n';
+	for (size_t childIndex = 0; childIndex < value->Size; ++childIndex) {
+		if (withLineBreaks == true)
+			for (size_t tabs = 0; tabs < depth; ++tabs)
+				jsonString += '\t';
+		jsonString += value->Childs->GetPos(childIndex)->Data->Value.ChildValue->ToString(withLineBreaks, depth + 1);
+		if (childIndex < value->Size - 1) {
+			if (withLineBreaks == true)
+				jsonString += ",\n";
+			else
+				jsonString += ", ";
+		}
+	}
+	if (withLineBreaks == true) {
+		jsonString += '\n';
+		for (size_t tabs = 1; tabs < depth; ++tabs)
+			jsonString += '\t';
+	}
+	return (jsonString + ']');
 }

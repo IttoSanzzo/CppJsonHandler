@@ -60,6 +60,7 @@ class JsonData {
 		std::string	ToString(const double& value) const;
 		std::string	ToString(const std::string* value) const;
 		std::string	ToString(const JsonNode* value, const bool& withLineBreaks, const size_t& depth) const;
+		std::string	ToString(const JsonChildren* value, const bool& withLineBreaks, const size_t& depth) const;
 };
 
 #endif

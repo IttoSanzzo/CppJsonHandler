@@ -26,7 +26,8 @@ class JsonChildren {
 	// G. Getters
 		std::string	GetName(void) const;
 		size_t		GetSize(void) const;
-		JsonData	GetChild(const size_t& position) const;
+		JsonData	GetChildData(const size_t& position) const;
+		JsonNode	GetChildNode(const size_t& position) const;
 	// 0. Member Functions
 		void		DeleteChild(const size_t& targetPosition);
 		JsonData*	PushChild(const JsonNode& child);
