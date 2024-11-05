@@ -13,7 +13,6 @@ class JsonNode;
 class JsonData;
 class DataNode;
 class JsonChildren;
-class ChildrenNode;
 
 // 2. Data Structures
 enum DataType {
@@ -31,6 +30,7 @@ union DataValue {
 	double			DoubleValue;
 	std::string*	StringValue;
 	JsonNode*		ChildValue;
+	JsonChildren*	ChildrenValue;
 };
 struct TokenInfo {
 	char	Type;
@@ -44,7 +44,6 @@ struct TokenInfo {
 # include "JsonData.hpp"
 # include "DataNode.hpp"
 # include "JsonChildren.hpp"
-# include "ChildrenNode.hpp"
 # include "JsonParser.hpp"
 
 #endif

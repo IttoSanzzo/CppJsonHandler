@@ -8,6 +8,7 @@
 class JsonData {
 	friend class DataNode;
 	friend class JsonNode;
+	friend class JsonChildren;
 	private:
 	// M. Member Variables
 		std::string	Name;
@@ -46,6 +47,7 @@ class JsonData {
 		double			TryGetDouble(void);
 		std::string		TryGetString(void);
 		JsonNode		TryGetChild(void);
+		JsonChildren	TryGetChildren(void);
 	// 0. Member Functions
 		std::string	ToString(const bool& withLineBreaks, const size_t& depth) const;
 	private:

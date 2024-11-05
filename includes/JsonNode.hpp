@@ -7,12 +7,11 @@
 // 1. Class Declaration
 class JsonNode {
 	friend class JsonData;
+	friend class JsonChildren;
 	private:
 	// M. Member Variables
 		std::string	Name;
-		JsonNode*	Parent;
 		size_t		Size;
-	public:
 		DataNode*	DataNodes;
 	public:
 	// C. Constructors
@@ -23,10 +22,8 @@ class JsonNode {
 		JsonNode(std::string name);
 	// S. Setters
 		void	SetName(std::string name);
-		void	SetParent(JsonNode* parent);
 	// G. Getters
 		std::string	GetName(void) const;
-		JsonNode*	GetParent(void) const;
 		size_t		GetSize(void) const;
 		JsonData*	FindData(const std::string& name);
 	// 0. Member Functions
@@ -38,11 +35,13 @@ class JsonNode {
 		JsonData*	TryPushData(const std::string& name, double value);
 		JsonData*	TryPushData(const std::string& name, const std::string& value);
 		JsonData*	TryPushData(const std::string& name, const JsonNode& value);
-		bool		TryGetBool(const std::string& name);
-		int			TryGetInt(const std::string& name);
-		double		TryGetDouble(const std::string& name);
-		std::string	TryGetString(const std::string& name);
-		JsonNode	TryGetChild(const std::string& name);
+		JsonData*	TryPushData(const std::string& name, const JsonChildren& value);
+		bool			TryGetBool(const std::string& name);
+		int				TryGetInt(const std::string& name);
+		double			TryGetDouble(const std::string& name);
+		std::string		TryGetString(const std::string& name);
+		JsonNode		TryGetChild(const std::string& name);
+		JsonChildren	TryGetChildren(const std::string& name);
 	// 1. Readers
 		static JsonNode	TryParseJsonFromString(const std::string& jsonString);
 		static JsonNode	TryParseJsonFromFile(const std::string& pathToFile);

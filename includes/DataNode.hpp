@@ -7,6 +7,7 @@
 // 1. Class Declaration
 class DataNode {
 	friend class JsonNode;
+	friend class JsonChildren;
 	private:
 	// M. Member Variables
 		DataNode*	Previous;

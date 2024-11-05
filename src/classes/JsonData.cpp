@@ -11,6 +11,10 @@ JsonData::~JsonData(void) {
 			if (this->Value.ChildValue != NULL)
 				delete this->Value.ChildValue;
 		break;
+		case (Children):
+			if (this->Value.ChildrenValue != NULL)
+				delete this->Value.ChildrenValue;
+		break;
 		default:
 		break;
 	}
@@ -138,6 +142,11 @@ JsonNode	JsonData::TryGetChild(void) {
 	if (this->Type == Child)
 		return (*this->Value.ChildValue);
 	throw JsonException("TryGetChild..: Not this type, the correct one is: '" + this->DataTypeName() + "'.");
+}
+JsonChildren	JsonData::TryGetChildren(void) {
+	if (this->Type == Children)
+		return (*this->Value.ChildrenValue);
+	throw JsonException("TryGetChildren..: Not this type, the correct one is: '" + this->DataTypeName() + "'.");
 }
 // 0. Member Functions
 std::string	JsonData::ToString(const bool& withLineBreaks, const size_t& depth) const {

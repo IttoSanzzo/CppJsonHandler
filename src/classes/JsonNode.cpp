@@ -12,7 +12,6 @@ JsonNode::~JsonNode(void) {
 // CC. Common Constructors
 JsonNode::JsonNode(void) {
 	this->Name = "JsonObject";
-	this->Parent = NULL;
 	this->Size = 0;
 	this->DataNodes = NULL;
 }
@@ -27,7 +26,6 @@ JsonNode& JsonNode::operator=(const JsonNode& src) {
 // OC. Other Contructors
 JsonNode::JsonNode(std::string name) {
 	this->Name = name;
-	this->Parent = NULL;
 	this->Size = 0;
 	this->DataNodes = NULL;
 }
@@ -36,16 +34,10 @@ JsonNode::JsonNode(std::string name) {
 void	JsonNode::SetName(std::string name) {
 	this->Name = name;
 }
-void	JsonNode::SetParent(JsonNode* parent) {
-	this->Parent = parent;
-}
 
 // G. Getters
 std::string	JsonNode::GetName(void) const {
 	return (this->Name);
-}
-JsonNode*	JsonNode::GetParent(void) const {
-	return (this->Parent);
 }
 size_t		JsonNode::GetSize(void) const {
 	return (this->Size);
@@ -141,43 +133,54 @@ JsonData*	JsonNode::TryPushData(const std::string& name, const JsonNode& value) 
 	dataValue.ChildValue = new JsonNode(value);
 	return (this->PushDataDoor(name, dataValue, Child));
 }
+JsonData*	JsonNode::TryPushData(const std::string& name, const JsonChildren& value) {
+	DataValue	dataValue;
+	dataValue.ChildrenValue = new JsonChildren(value);
+	return (this->PushDataDoor(name, dataValue, Child));
+}
 // 0.3 TryGets
-bool		JsonNode::TryGetBool(const std::string& name) {
+bool			JsonNode::TryGetBool(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetBool..: '" + name + "' Not Found.");
 	return (data->TryGetBool());
 }
-int			JsonNode::TryGetInt(const std::string& name) {
+int				JsonNode::TryGetInt(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetInt..: '" + name + "' Not Found.");
 	return (data->TryGetInt());
 }
-double		JsonNode::TryGetDouble(const std::string& name) {
+double			JsonNode::TryGetDouble(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetDouble..: '" + name + "' Not Found.");
 	return (data->TryGetDouble());
 }
-std::string	JsonNode::TryGetString(const std::string& name) {
+std::string		JsonNode::TryGetString(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetString..: '" + name + "' Not Found.");
 	return (data->TryGetString());
 }
-JsonNode	JsonNode::TryGetChild(const std::string& name) {
+JsonNode		JsonNode::TryGetChild(const std::string& name) {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetChild..: '" + name + "' Not Found.");
 	return (data->TryGetChild());
 }
-// 0.4
-JsonNode	JsonNode::TryParseJsonFromString(const std::string& jsonString) {
+JsonChildren	JsonNode::TryGetChildren(const std::string& name) {
+	JsonData* data = this->FindData(name);
+	if (data == NULL)
+		throw JsonException("TryGetChild..: '" + name + "' Not Found.");
+	return (data->TryGetChildren());
+}
+// 0.4 Parsing
+JsonNode		JsonNode::TryParseJsonFromString(const std::string& jsonString) {
 	JsonParser	reader(jsonString);
 	return (reader.ReadJson());
 }
-JsonNode	JsonNode::TryParseJsonFromFile(const std::string& pathToFile) {
+JsonNode		JsonNode::TryParseJsonFromFile(const std::string& pathToFile) {
 	if (pathToFile.find(".json") != pathToFile.size() - 5)
 		throw (JsonException("TryParseJsonFromFile..: '" + pathToFile + "' is not a valid json."));
 	std::ifstream in(pathToFile.c_str());
@@ -191,7 +194,6 @@ JsonNode	JsonNode::TryParseJsonFromFile(const std::string& pathToFile) {
 // P. Private Functions
 void		JsonNode::DeepCopy(const JsonNode& src) {
 	this->Name = src.Name;
-	this->Parent = src.Parent;
 	this->Size = src.Size;
 	if (src.DataNodes != NULL)
 		this->DataNodes = src.DataNodes->GetFirst()->ListCopy();
