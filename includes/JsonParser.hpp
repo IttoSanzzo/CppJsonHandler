@@ -9,10 +9,9 @@ class JsonParser {
 	friend class JsonNode;
 	private:
 	// M. Member Variables
-		std::string		parsingString;
-		std::string		refinedString;
-		std::string		elementName;
-		size_t			globalIndex;
+		std::string		ParsingString;
+		std::string		ElementName;
+		size_t			GlobalIndex;
 		JsonParser(const std::string& jsonString);
 		~JsonParser(void);
 	public:
@@ -35,11 +34,13 @@ class JsonParser {
 		void		PushNumberElement(JsonNode& jsonNode);
 		std::pair<DataValue, DataType>	GetNumberDataFromString(const std::string& numberString);
 		void		PushChildElement(JsonNode& jsonNode);
-		size_t		GetNextElementIndex(size_t currentIndex);
+		void		PushChildrenElement(JsonNode& jsonNode);
+		size_t		GetNextElementIndex(const std::string& parsingString, const size_t& currentIndex);
 		TokenInfo	GetNextToken(const std::string& srcString, size_t startingPos) const;
 		TokenInfo	GetReverseNextToken(const std::string& srcString, size_t startingPos) const;
 		size_t		GetNextDoubleQuotes(const std::string& srcString, size_t startingPos) const;
-		size_t		GetClosingBraket(const std::string& bracketString, size_t currentIndex);
+		size_t		GetClosingCurlyBraket(const std::string& bracketString, size_t currentIndex);
+		size_t		GetClosingSquareBraket(const std::string& bracketString, size_t currentIndex);
 };
 
 #endif

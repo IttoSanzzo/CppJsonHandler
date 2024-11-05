@@ -179,11 +179,20 @@ std::string	JsonData::ToString(const bool& withLineBreaks, const size_t& depth) 
 void		JsonData::DeepCopy(const JsonData& src) {
 	this->Name = src.Name;
 	this->Type = src.Type;
-	this->Value = src.Value;
-	if (this->Type == String)
-		this->Value.StringValue = new std::string(*src.Value.StringValue);
-	if (this->Type == Child)
-		this->Value.ChildValue = new JsonNode(*src.Value.ChildValue);
+	switch (src.Type) {
+		case (String):
+			this->Value.StringValue = new std::string(*src.Value.StringValue);
+		break;
+		case (Child):
+			this->Value.ChildValue = new JsonNode(*src.Value.ChildValue);
+		break;
+		case (Children):
+			this->Value.ChildrenValue = new JsonChildren(*src.Value.ChildrenValue);
+		break;
+		default:
+			this->Value = src.Value;
+		break;
+	}
 }
 std::string	JsonData::DataTypeName() {
 	switch (this->Type) {
