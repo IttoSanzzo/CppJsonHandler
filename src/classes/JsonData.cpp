@@ -69,43 +69,45 @@ JsonData::JsonData(const std::string& name, const JsonNode* value) {
 void	JsonData::SetName(const std::string& name) {
 	this->Name = name;
 }
-void	JsonData::SetValue(const DataValue& value, const DataType& type) {
-	if (this->Type == String && this->Value.StringValue != NULL)
-		delete this->Value.StringValue;
-	else if (this->Type == Child && this->Value.ChildValue != NULL)
-		delete this->Value.ChildValue;
-	this->Type = type;
-	this->Value = value;
-}
 void	JsonData::SetValue(const bool& value) {
-	this->Type = Bool;
-	this->Value.BoolValue = value;
+	DataValue	dataValue;
+	dataValue.BoolValue = value;
+	this->SetValue(dataValue, Bool);
 }
 void	JsonData::SetValue(const int& value) {
-	this->Type = Int;
-	this->Value.IntValue = value;
+	DataValue	dataValue;
+	dataValue.IntValue = value;
+	this->SetValue(dataValue, Int);
 }
 void	JsonData::SetValue(const double& value) {
-	this->Type = Double;
-	this->Value.DoubleValue = value;
+	DataValue	dataValue;
+	dataValue.DoubleValue = value;
+	this->SetValue(dataValue, Double);
 }
 void	JsonData::SetValue(const std::string& value) {
-	if (this->Type == String && this->Value.StringValue != NULL)
-		delete this->Value.StringValue;
-	this->Type = String;
-	this->Value.StringValue = new std::string(value);
+	DataValue	dataValue;
+	dataValue.StringValue = new std::string(value);
+	this->SetValue(dataValue, String);
 }
 void	JsonData::SetValue(const JsonNode& value) {
-	if (this->Type == Child && this->Value.ChildValue != NULL)
-		delete this->Value.ChildValue;
-	this->Type = Child;
-	this->Value.ChildValue = new JsonNode(value);
+	DataValue	dataValue;
+	dataValue.ChildValue = new JsonNode(value);
+	this->SetValue(dataValue, Child);
 }
 void	JsonData::SetValue(const JsonNode* value) {
-	if (this->Type == Child && this->Value.ChildValue != NULL)
-		delete this->Value.ChildValue;
-	this->Type = Child;
-	this->Value.ChildValue = (JsonNode*)value;
+	DataValue	dataValue;
+	dataValue.ChildValue = (JsonNode*)value;
+	this->SetValue(dataValue, Child);
+}
+void	JsonData::SetValue(const JsonChildren& value) {
+	DataValue	dataValue;
+	dataValue.ChildrenValue = new JsonChildren(value);
+	this->SetValue(dataValue, Children);
+}
+void	JsonData::SetValue(const JsonChildren* value) {
+	DataValue	dataValue;
+	dataValue.ChildrenValue = (JsonChildren*)value;
+	this->SetValue(dataValue, Children);
 }
 
 // G. Getters
@@ -193,6 +195,26 @@ void		JsonData::DeepCopy(const JsonData& src) {
 			this->Value = src.Value;
 		break;
 	}
+}
+void		JsonData::SetValue(const DataValue& value, const DataType& type) {
+	switch (this->Type) {
+		case (String):
+			if (this->Value.StringValue != NULL)
+				delete this->Value.StringValue;
+		break;
+		case (Child):
+			if (this->Value.ChildValue != NULL)
+				delete this->Value.ChildValue;
+		break;
+		case (Children):
+			if (this->Value.ChildrenValue != NULL)
+				delete this->Value.ChildrenValue;
+		break;
+		default:
+		break;
+	}
+	this->Type = type;
+	this->Value = value;
 }
 std::string	JsonData::DataTypeName() {
 	switch (this->Type) {

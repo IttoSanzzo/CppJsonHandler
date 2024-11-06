@@ -31,13 +31,14 @@ class JsonData {
 		JsonData(const std::string& name, const JsonNode* value);
 	// S. Setters
 		void	SetName(const std::string& name);
-		void	SetValue(const DataValue& value, const DataType& type);
 		void	SetValue(const bool& value);
 		void	SetValue(const int& value);
 		void	SetValue(const double& value);
 		void	SetValue(const std::string& value);
 		void	SetValue(const JsonNode& value);
 		void	SetValue(const JsonNode* value);
+		void	SetValue(const JsonChildren& value);
+		void	SetValue(const JsonChildren* value);
 	// G. Getters
 		std::string		GetName(void) const;
 		DataType		GetType(void) const;
@@ -53,6 +54,7 @@ class JsonData {
 	private:
 	// 0. Private Functions
 		void		DeepCopy(const JsonData& src);
+		void		SetValue(const DataValue& value, const DataType& type);
 		std::string	DataTypeName(const DataType& type);
 		std::string	DataTypeName();
 		std::string	ToString(const bool& value) const;

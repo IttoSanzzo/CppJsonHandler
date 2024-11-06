@@ -85,10 +85,10 @@ val		:
 
 test: re
 	@clear
-	@c++ main.cpp ./jsonReader.a -o test.out
-	@./test.out
+	@c++ main.cpp ./jsonReader.a -o main.out
+	@./main.out
 
 valtest: re
 	@clear
-	@c++ main.cpp ./jsonReader.a -o test.out
-	@valgrind --leak-check=full --show-leak-kinds=all ./test.out
+	@c++ main.cpp ./jsonReader.a -o main.out
+	@valgrind --leak-check=full --show-leak-kinds=all ./main.out
