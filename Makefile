@@ -1,5 +1,5 @@
 # 0. Main Info
-NAME	= jsonReader.a
+NAME	= jsonHandler.a
 C_COMP	= c++
 C_ARRC	= ar -rc
 C_FLAG	= -Wall -Werror -Wextra -std=c++98
