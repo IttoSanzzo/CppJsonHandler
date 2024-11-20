@@ -42,7 +42,7 @@ std::string	JsonNode::GetName(void) const {
 size_t		JsonNode::GetSize(void) const {
 	return (this->Size);
 }
-JsonData*	JsonNode::FindData(const std::string& name) {
+JsonData*	JsonNode::FindData(const std::string& name) const {
 	std::string* targetName = split(name, '.');
 	JsonData* targetData = this->FindData(targetName);
 	delete[] targetName;
@@ -139,37 +139,37 @@ JsonData*	JsonNode::TryPushData(const std::string& name, const JsonChildren& val
 	return (this->PushDataDoor(name, dataValue, Children));
 }
 // 0.3 TryGets
-bool			JsonNode::TryGetBool(const std::string& name) {
+bool			JsonNode::TryGetBool(const std::string& name) const {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetBool..: '" + name + "' Not Found.");
 	return (data->TryGetBool());
 }
-int				JsonNode::TryGetInt(const std::string& name) {
+int				JsonNode::TryGetInt(const std::string& name) const {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetInt..: '" + name + "' Not Found.");
 	return (data->TryGetInt());
 }
-double			JsonNode::TryGetDouble(const std::string& name) {
+double			JsonNode::TryGetDouble(const std::string& name) const {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetDouble..: '" + name + "' Not Found.");
 	return (data->TryGetDouble());
 }
-std::string		JsonNode::TryGetString(const std::string& name) {
+std::string		JsonNode::TryGetString(const std::string& name) const {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetString..: '" + name + "' Not Found.");
 	return (data->TryGetString());
 }
-JsonNode		JsonNode::TryGetChild(const std::string& name) {
+JsonNode		JsonNode::TryGetChild(const std::string& name) const {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetChild..: '" + name + "' Not Found.");
 	return (data->TryGetChild());
 }
-JsonChildren	JsonNode::TryGetChildren(const std::string& name) {
+JsonChildren	JsonNode::TryGetChildren(const std::string& name) const {
 	JsonData* data = this->FindData(name);
 	if (data == NULL)
 		throw JsonException("TryGetChild..: '" + name + "' Not Found.");
@@ -243,7 +243,7 @@ DataNode*	JsonNode::CreateSimpleDataNode(JsonData* data) {
 		return (this->DataNodes = new DataNode(data));
 	return (this->DataNodes->AddBack(data));
 }
-JsonData*	JsonNode::FindData(const std::string* targetName) {
+JsonData*	JsonNode::FindData(const std::string* targetName) const {
 	if (targetName[0].empty() || this->DataNodes == NULL)
 		return (NULL);
 	DataNode* node = this->DataNodes->FindNode(targetName[0]);
